@@ -1,0 +1,120 @@
+name: Build Debug APK & GitHub Release
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Optional release tag (e.g. v1.0.0). Leave blank to update 'latest-debug'."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build-debug-apk:
+    name: Build & Publish Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Prepare debug keystore
+        run: |
+          if [ -f debug.keystore.base64 ]; then
+            base64 -d debug.keystore.base64 > debug.keystore
+          else
+            keytool -genkeypair -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Run unit tests
+        run: gradle :app:testDebugUnitTest --tests "com.example.KeyframeEngineTest" --no-daemon
+
+      - name: Build Debug APK
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Stage APK for upload
+        run: |
+          mkdir -p release-assets
+          cp app/build/outputs/apk/debug/app-debug.apk release-assets/AfterMotion-debug.apk
+          ls -lh release-assets/AfterMotion-debug.apk
+
+      - name: Upload Debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AfterMotion-debug-apk
+          path: release-assets/AfterMotion-debug.apk
+          retention-days: 30
+
+      - name: Determine Release metadata
+        if: github.event_name != 'pull_request'
+        id: release_meta
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${{ github.ref_name }}"
+            TITLE="AfterMotion ${TAG}"
+            IS_PRE="false"
+          elif [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG="${{ github.event.inputs.release_tag }}"
+            TITLE="AfterMotion ${TAG}"
+            IS_PRE="false"
+          else
+            TAG="latest-debug"
+            TITLE="AfterMotion Debug APK (Latest)"
+            IS_PRE="true"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "title=${TITLE}" >> "$GITHUB_OUTPUT"
+          echo "prerelease=${IS_PRE}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub Release with direct APK download
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          name: ${{ steps.release_meta.outputs.title }}
+          prerelease: ${{ steps.release_meta.outputs.prerelease }}
+          generate_release_notes: true
+          body: |
+            Automated Debug APK build for **AfterMotion** (Commit `${{ github.sha }}`, Run `#${{ github.run_number }}`).
+
+            ### Direct Download
+            Download **`AfterMotion-debug.apk`** from the Assets section below and install on Android (API 24+).
+          files: |
+            release-assets/AfterMotion-debug.apk

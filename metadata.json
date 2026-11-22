@@ -1,0 +1,6 @@
+{
+  "name": "AfterMotion",
+  "description": "Pro motion graphics, keyframe animation, and real-time VFX compositing studio for Android.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

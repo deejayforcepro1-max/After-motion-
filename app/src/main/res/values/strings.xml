@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">AfterMotion</string>
+    <string name="projects_header_title">AfterMotion Studio</string>
+    <string name="projects_header_subtitle">Compositions &amp; Motion Sequences</string>
+    <string name="new_composition">New Comp</string>
+    <string name="create_composition">Create Composition</string>
+    <string name="export_render">Export</string>
+    <string name="add_layer">Add Layer</string>
+    <string name="tab_transform">Transform</string>
+    <string name="tab_effects">Effects</string>
+    <string name="tab_style">Blend &amp; Style</string>
+    <string name="tab_timing">Timing</string>
+    <string name="empty_layers_hint">Tap + Layer to add text, shapes, VFX particles, or photos.</string>
+    <string name="cd_back">Navigate back</string>
+    <string name="cd_play_pause">Toggle playback</string>
+    <string name="cd_jump_start">Jump to start</string>
+    <string name="cd_toggle_guides">Toggle safe guides</string>
+    <string name="cd_export">Export composition</string>
+    <string name="cd_undo">Undo</string>
+    <string name="cd_redo">Redo</string>
+</resources>
