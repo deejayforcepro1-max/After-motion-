@@ -16,15 +16,12 @@ This project includes `.github/workflows/build-debug-apk.yml`, which automatical
 - **On version tags (`v*`, e.g., `v1.0.0`) or manual `workflow_dispatch`**:
   - Publishes a versioned GitHub Release with `AfterMotion-debug.apk` attached.
 
-### Direct APK Download Link Pattern
-Once pushed to GitHub (`<OWNER>/<REPO>`), the latest debug APK can be downloaded directly at:
+### Direct APK Download Links
+Once pushed to [`deejayforcepro1-max/After-motion-`](https://github.com/deejayforcepro1-max/After-motion-), the latest debug APK can be downloaded directly at:
 
-```text
-https://github.com/<OWNER>/<REPO>/releases/download/latest-debug/AfterMotion-debug.apk
-```
-
-Or from any tagged release `v1.0.0`:
-
-```text
-https://github.com/<OWNER>/<REPO>/releases/download/v1.0.0/AfterMotion-debug.apk
-```
+- **Latest Debug APK (rolling `main` build)**:
+  `https://github.com/deejayforcepro1-max/After-motion-/releases/download/latest-debug/AfterMotion-debug.apk`
+- **All Releases**:
+  `https://github.com/deejayforcepro1-max/After-motion-/releases`
+- **Tagged Release APK** (e.g. `v1.0.0`):
+  `https://github.com/deejayforcepro1-max/After-motion-/releases/download/v1.0.0/AfterMotion-debug.apk`

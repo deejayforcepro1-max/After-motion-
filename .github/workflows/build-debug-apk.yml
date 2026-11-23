@@ -115,6 +115,7 @@ jobs:
             Automated Debug APK build for **AfterMotion** (Commit `${{ github.sha }}`, Run `#${{ github.run_number }}`).
 
             ### Direct Download
-            Download **`AfterMotion-debug.apk`** from the Assets section below and install on Android (API 24+).
+            Download **`AfterMotion-debug.apk`** from the Assets section below and install on Android (API 24+):
+            - Direct APK URL: https://github.com/deejayforcepro1-max/After-motion-/releases/download/${{ steps.release_meta.outputs.tag }}/AfterMotion-debug.apk
           files: |
             release-assets/AfterMotion-debug.apk
